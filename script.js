@@ -1,38 +1,32 @@
-// Data tugas disimpan di localStorage
-// Format tugas: {id, name, date (YYYY-MM-DD), completed:bool}
+// Data tugas di localStorage dengan struktur:
+// {id, name, date: 'YYYY-MM-DD', completed: bool}
 
-// Storage key
 const STORAGE_KEY = 'todoList_data';
 
-// Cache elemen navigasi
 const navHome = document.getElementById('nav-home');
 const navDaftar = document.getElementById('nav-daftar');
 const navTasks = document.getElementById('nav-tasks');
 const content = document.getElementById('content');
 
-// Render halaman default (Home)
 let currentPage = 'home'; // home, daftar, tasks
 let tasks = [];
-let selectedDay = null;
+let selectedDay = null; // filter hari di Home page
 
-// --- Helper fungsi untuk localStorage ---
+// Hari & bulan dalam Bahasa Indonesia untuk format tanggal
+const hariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const bulanIndo = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+// --- Fungsi localStorage ---
 function loadTasksFromStorage() {
   const data = localStorage.getItem(STORAGE_KEY);
-  if (data) {
-    tasks = JSON.parse(data);
-  } else {
-    tasks = [];
-  }
+  if (data) tasks = JSON.parse(data);
+  else tasks = [];
 }
-
 function saveTasksToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
-// --- Format tanggal ke tulisan (contoh Selasa, 31 Des) ---
-const hariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-const bulanIndo = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-
+// --- Format tanggal ke format "Hari, tanggal Bulan" ---
 function formatTanggal(tglStr) {
   if (!tglStr) return '';
   const dt = new Date(tglStr + 'T00:00:00');
@@ -43,12 +37,12 @@ function formatTanggal(tglStr) {
   return `${hari}, ${tanggal} ${bulan}`;
 }
 
-// --- Fungsi membuat ID unik ---
+// --- ID unik untuk tugas ---
 function createId() {
   return '_' + Math.random().toString(36).substr(2, 9);
 }
 
-// --- Fungsi Menandai active menu ---
+// --- Set underline pada menu aktif ---
 function setActiveMenu(menu) {
   navHome.classList.remove('active');
   navDaftar.classList.remove('active');
@@ -58,11 +52,10 @@ function setActiveMenu(menu) {
   if (menu === 'tasks') navTasks.classList.add('active');
 }
 
-// --- Fungsi render Home page ---
+// --- Render halaman Home ---
 function renderHome() {
   currentPage = 'home';
   setActiveMenu('home');
-  selectedDay = null; // reset filter hari
   content.innerHTML = '';
 
   const header = document.createElement('h1');
@@ -72,11 +65,7 @@ function renderHome() {
   subtitle.className = 'subtitle';
   subtitle.textContent = 'Tambahkan tugas, tandai selesai, dan hapus tugas yang sudah tidak diperlukan.';
 
-  // Box Tasks + Completed
-  const box = document.createElement('div');
-  box.className = 'section-box';
-
-  // -- Title bar Today with arrow and day filter
+  // Today header & tombol arrow buka/tutup filter hari
   const todayWrapper = document.createElement('div');
   todayWrapper.style.textAlign = 'center';
   todayWrapper.style.marginBottom = '1.2rem';
@@ -91,21 +80,19 @@ function renderHome() {
   todayTitle.appendChild(arrowSmall);
   todayWrapper.appendChild(todayTitle);
 
-  // Container day list (Minggu, Senin)
+  // Daftar hari lengkap untuk filter (Minggu s/d Sabtu)
   const dayList = document.createElement('div');
   dayList.className = 'day-list';
   dayList.style.display = 'none';
 
-  ['Minggu', 'Senin'].forEach(d => {
+  const hariFull = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  hariFull.forEach(d => {
     const btnDay = document.createElement('button');
     btnDay.textContent = d;
     btnDay.onclick = () => {
-      if (selectedDay === d) {
-        selectedDay = null;
-      } else {
-        selectedDay = d;
-      }
-      renderHome(); // rerender
+      // Toggle hari yang sama -> reset filter
+      selectedDay = (selectedDay === d) ? null : d;
+      renderHome();
     };
     if (selectedDay === d) btnDay.classList.add('active');
     dayList.appendChild(btnDay);
@@ -122,25 +109,24 @@ function renderHome() {
     }
   };
 
-  // ------------------------------------------------------------------------------------
-  // Section Tasks (collapse)
+  // Container wrapper box
+  const box = document.createElement('div');
+  box.className = 'section-box';
+
+  // Section Tasks dengan collapsible dan filter hari
   const sectionTasks = createCollapsibleSection('Tasks', true);
-  // Filter tugas yg belum selesai
   let filteredTasks = tasks.filter(t => !t.completed);
 
-  // Jika day filter aktif, filter berdasarkan day
   if (selectedDay) {
     filteredTasks = filteredTasks.filter(t => {
       if (!t.date) return false;
       const dt = new Date(t.date + 'T00:00:00');
-      const dayName = hariIndo[dt.getDay()];
-      return dayName === selectedDay;
+      return hariIndo[dt.getDay()] === selectedDay;
     });
   }
-
   renderTaskList(filteredTasks, sectionTasks.tasksContainer, false);
 
-  // Footer collapse circle untuk collapse semua tugas
+  // Collapse circle footer Tasks
   const collapseCircle = document.createElement('div');
   collapseCircle.className = 'collapse-circle';
   collapseCircle.title = 'Collapse Semua Tugas';
@@ -156,24 +142,20 @@ function renderHome() {
       iconArrow.style.transform = 'rotate(180deg)';
     }
   };
-  // append after tasks section
-  sectionTasks.wrapper.appendChild(collapseCircle);
 
-  // ------------------------------------------------------------------------------------
-  // Section Completed (collapse)
+  // Section Completed dengan filter hari
   const sectionCompleted = createCollapsibleSection('Completed', true);
   let completedTasks = tasks.filter(t => t.completed);
   if (selectedDay) {
     completedTasks = completedTasks.filter(t => {
       if (!t.date) return false;
       const dt = new Date(t.date + 'T00:00:00');
-      const dayName = hariIndo[dt.getDay()];
-      return dayName === selectedDay;
+      return hariIndo[dt.getDay()] === selectedDay;
     });
   }
   renderTaskList(completedTasks, sectionCompleted.tasksContainer, true);
 
-  // Footer collapse circle completed
+  // Collapse circle footer Completed
   const collapseCircleC = document.createElement('div');
   collapseCircleC.className = 'collapse-circle';
   collapseCircleC.title = 'Collapse Semua Completed';
@@ -189,7 +171,6 @@ function renderHome() {
       iconArrowC.style.transform = 'rotate(180deg)';
     }
   };
-  sectionCompleted.wrapper.appendChild(collapseCircleC);
 
   content.appendChild(header);
   content.appendChild(subtitle);
@@ -197,10 +178,12 @@ function renderHome() {
   content.appendChild(box);
   
   box.appendChild(sectionTasks.wrapper);
+  box.appendChild(collapseCircle);
   box.appendChild(sectionCompleted.wrapper);
+  box.appendChild(collapseCircleC);
 }
 
-// Fungsi render Daftar Tugas page
+// --- Render halaman Daftar Tugas ---
 function renderDaftarTugas() {
   currentPage = 'daftar';
   setActiveMenu('daftar');
@@ -213,10 +196,6 @@ function renderDaftarTugas() {
   subtitle.className = 'subtitle';
   subtitle.textContent = 'Tambahkan tugas, tandai selesai, dan hapus tugas yang sudah tidak diperlukan.';
 
-  content.appendChild(header);
-  content.appendChild(subtitle);
-
-  // Container form tambah tugas
   const formContainer = document.createElement('div');
   formContainer.className = 'add-task-container';
 
@@ -236,7 +215,7 @@ function renderDaftarTugas() {
   btnAdd.textContent = 'Tambah';
   btnAdd.id = 'btn-add-task';
 
-  // Icon kalender (informasi)
+  // Icon kalender
   const calendarIcon = document.createElement('span');
   calendarIcon.className = 'calendar-icon';
   calendarIcon.textContent = '📅';
@@ -246,6 +225,8 @@ function renderDaftarTugas() {
   formContainer.appendChild(btnAdd);
   formContainer.appendChild(calendarIcon);
 
+  content.appendChild(header);
+  content.appendChild(subtitle);
   content.appendChild(formContainer);
 
   btnAdd.addEventListener('click', () => {
@@ -259,7 +240,6 @@ function renderDaftarTugas() {
       alert('Tanggal deadline harus diisi!');
       return;
     }
-    // Tambah tugas
     tasks.push({
       id: createId(),
       name,
@@ -269,17 +249,15 @@ function renderDaftarTugas() {
     saveTasksToStorage();
     inputTaskName.value = '';
     inputTaskDate.value = '';
-
     alert('Tugas berhasil ditambahkan! Silakan cek di halaman Tasks dan Home.');
   });
 }
 
-// Fungsi render Tasks page
+// --- Render halaman Tasks ---
 function renderTasks() {
   currentPage = 'tasks';
   setActiveMenu('tasks');
-  selectedDay = null;
-
+  selectedDay = null; // reset filter hari
   content.innerHTML = '';
 
   const header = document.createElement('h1');
@@ -292,16 +270,15 @@ function renderTasks() {
   content.appendChild(header);
   content.appendChild(subtitle);
 
-  // Container utama tugas dan completed
   const box = document.createElement('div');
   box.className = 'section-box';
 
-  // Section Tasks Collapse dengan arrow
+  // Section Tasks dengan collapsible
   const sectionTasks = createCollapsibleSection('Tasks', true);
   const uncompletedTasks = tasks.filter(t => !t.completed);
   renderTaskList(uncompletedTasks, sectionTasks.tasksContainer, false);
 
-  // Footer collapse circle Tasks
+  // Collapse circle footer Tasks
   const collapseCircle = document.createElement('div');
   collapseCircle.className = 'collapse-circle';
   collapseCircle.title = 'Collapse Semua Tugas';
@@ -318,12 +295,12 @@ function renderTasks() {
     }
   };
 
-  // Section Completed
+  // Section Completed dengan collapsible
   const sectionCompleted = createCollapsibleSection('Completed', true);
   const completedTasks = tasks.filter(t => t.completed);
   renderTaskList(completedTasks, sectionCompleted.tasksContainer, true);
 
-  // Footer collapse circle Completed
+  // Collapse circle footer Completed
   const collapseCircleC = document.createElement('div');
   collapseCircleC.className = 'collapse-circle';
   collapseCircleC.title = 'Collapse Semua Completed';
@@ -348,7 +325,7 @@ function renderTasks() {
   content.appendChild(box);
 }
 
-// ---- Fungsi membuat section collapsible (Tasks/Completed) ---
+// --- Buat section collapsible (Tasks/Completed) ---
 function createCollapsibleSection(title, defaultExpanded = true) {
   const wrapper = document.createElement('div');
   wrapper.style.marginBottom = '1rem';
@@ -356,14 +333,13 @@ function createCollapsibleSection(title, defaultExpanded = true) {
   const header = document.createElement('div');
   header.className = 'section-header';
 
-  // Icon rumah (menggunakan unicode house)
+  // Ikon rumah (unicode)
   const iconHome = document.createElement('span');
   iconHome.textContent = '🏠';
 
   const titleSpan = document.createElement('span');
   titleSpan.textContent = title;
 
-  // Arrow yang bisa di klik untuk collapse section
   const arrow = document.createElement('span');
   arrow.className = 'collapse-arrow';
   arrow.textContent = '▼';
@@ -374,7 +350,6 @@ function createCollapsibleSection(title, defaultExpanded = true) {
   header.style.gap = '12px';
   header.style.cursor = 'pointer';
 
-  // Container list tugas
   const tasksContainer = document.createElement('div');
   tasksContainer.style.display = defaultExpanded ? 'flex' : 'none';
   tasksContainer.style.flexDirection = 'column';
@@ -384,7 +359,6 @@ function createCollapsibleSection(title, defaultExpanded = true) {
   wrapper.appendChild(header);
   wrapper.appendChild(tasksContainer);
 
-  // Toggle
   header.onclick = () => {
     if (tasksContainer.style.display === 'none') {
       tasksContainer.style.display = 'flex';
@@ -398,8 +372,8 @@ function createCollapsibleSection(title, defaultExpanded = true) {
   return { wrapper, tasksContainer, container: tasksContainer };
 }
 
-// --- Render daftar tugas ke container --
-// completed: true jika task sudah selesai
+// --- Render daftar tugas ke container ---
+// completed: true kalau tugas sudah selesai
 function renderTaskList(listTasks, container, completed) {
   container.innerHTML = '';
   if (listTasks.length === 0) {
@@ -411,14 +385,12 @@ function renderTaskList(listTasks, container, completed) {
     return;
   }
 
-  listTasks.forEach((t) => {
+  listTasks.forEach(t => {
     const taskBox = document.createElement('div');
     taskBox.className = 'task-item';
-    if (completed) {
-      taskBox.classList.add('completed');
-    }
+    if (completed) taskBox.classList.add('completed');
 
-    // Kiri: lingkaran dan nama tugas + tanggal
+    // Bagian kiri: lingkaran checkbox, nama tugas, tanggal
     const leftDiv = document.createElement('div');
     leftDiv.className = 'task-left';
 
@@ -446,7 +418,7 @@ function renderTaskList(listTasks, container, completed) {
     leftDiv.appendChild(nameSpan);
     leftDiv.appendChild(dateSpan);
 
-    // Kanan: tombol aksi (edit, hapus, selesai)
+    // Bagian kanan: tombol aksi
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'task-actions';
 
@@ -488,7 +460,7 @@ function renderTaskList(listTasks, container, completed) {
       actionsDiv.appendChild(btnDelete);
       actionsDiv.appendChild(btnDone);
     } else {
-      // Completed items hanya ada tombol hapus
+      // Untuk completed, hanya tombol hapus
       const btnDelete = document.createElement('button');
       btnDelete.textContent = 'Hapus';
       btnDelete.className = 'delete-btn';
@@ -511,9 +483,8 @@ function renderTaskList(listTasks, container, completed) {
   });
 }
 
-// --- Fungsi Edit task ---
+// --- Popup edit tugas sederhana ---
 function editTaskPopup(task) {
-  // Popup sederhana (prompt) untuk edit nama dan tanggal
   let newName = prompt('Edit Nama Tugas:', task.name);
   if (newName === null) return; // batal
   newName = newName.trim();
@@ -521,12 +492,10 @@ function editTaskPopup(task) {
     alert('Nama tugas tidak boleh kosong!');
     return;
   }
-
   let newDate = prompt('Edit Tanggal (YYYY-MM-DD):', task.date);
   if (newDate === null) return; // batal
   newDate = newDate.trim();
 
-  // Validasi format tanggal
   if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
     alert('Format tanggal harus YYYY-MM-DD');
     return;
@@ -536,14 +505,13 @@ function editTaskPopup(task) {
     alert('Tanggal tidak valid!');
     return;
   }
-
   task.name = newName;
   task.date = newDate;
   saveTasksToStorage();
   rerenderCurrentPage();
 }
 
-// --- Fungsi rerender current page ---
+// --- Render ulang page sesuai currentPage ---
 function rerenderCurrentPage() {
   loadTasksFromStorage();
   if (currentPage === 'home') renderHome();
@@ -551,22 +519,20 @@ function rerenderCurrentPage() {
   else if (currentPage === 'daftar') renderDaftarTugas();
 }
 
-// --- Event Listener navigasi ---
-navHome.addEventListener('click', (e) => {
+// --- Event listener navigasi ---
+navHome.addEventListener('click', e => {
   e.preventDefault();
   renderHome();
 });
-
-navDaftar.addEventListener('click', (e) => {
+navDaftar.addEventListener('click', e => {
   e.preventDefault();
   renderDaftarTugas();
 });
-
-navTasks.addEventListener('click', (e) => {
+navTasks.addEventListener('click', e => {
   e.preventDefault();
   renderTasks();
 });
 
-// --- Inisialisasi -->
+// --- Inisialisasi aplikasi ---
 loadTasksFromStorage();
 renderHome();
