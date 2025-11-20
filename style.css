@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  background: linear-gradient(135deg, #dafaff 0%, #becdff 100%);
+  color: #000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+nav {
+  margin-bottom: 2rem;
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 3rem;
+  background: white;
+  border-radius: 24px;
+  padding: 0.8rem 2rem;
+  box-shadow: 0 8px 24px -4px rgba(0,0,0,0.15);
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #000;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding-bottom: 5px;
+  transition: border-bottom 0.3s ease;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-link.active {
+  border-bottom: 3px solid #000;
+}
+
+main {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 25px 30px -20px rgba(188, 206, 255, 0.8);
+  padding: 2rem;
+  width: 100%;
+  max-width: 900px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* HEADER */
+h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.subtitle {
+  font-weight: 400;
+  font-size: 1rem;
+  text-align: center;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+/* FORM TAMBAH TUGAS */
+.add-task-container {
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgb(150 162 255 / 40%);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.add-task-container input[type="text"] {
+  flex: 2;
+  height: 2.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0 1rem;
+  font-size: 1rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.add-task-container input[type="date"] {
+  flex: 1;
+  height: 2.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0 0.6rem;
+  font-size: 1rem;
+}
+
+.add-task-container button {
+  background: #5c9eff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-family: 'Fira Code', monospace;
+}
+
+.add-task-container button:hover {
+  background: #3270ff;
+}
+
+.add-task-container .calendar-icon {
+  font-size: 1.5rem;
+  cursor: default;
+  margin-left: -30px;
+  color: #4d6ec6;
+}
+
+/* LIST TUGAS */
+.section-box {
+  background: #f0f1f4;
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 24px;
+}
+
+.section-header {
+  font-weight: 700;
+  font-size: 1.1rem;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  color: #202224cc;
+}
+
+.collapse-arrow {
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.collapse-arrow.collapsed {
+  transform: rotate(180deg);
+}
+
+/* Kotak tugas */
+.task-item {
+  background: #dcdcdf88;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+}
+
+/* Tugas selesai tercoret */
+.task-item.completed {
+  background: #dcdcdf55;
+  text-decoration: line-through;
+  color: #666;
+}
+
+/* Info tugas kiri */
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 1;
+}
+
+.task-left .circle-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #aaa;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.task-left .circle-checkbox.active {
+  border-color: #39be77;
+  background: #39be77;
+}
+
+.task-name {
+  font-size: 1rem;
+  user-select: none;
+}
+
+.task-date {
+  font-size: 0.75rem;
+  color: #777;
+  margin-left: 6px;
+  user-select: none;
+  font-weight: 400;
+  font-style: italic;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Tombol aksi */
+.task-actions button {
+  border: none;
+  border-radius: 8px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  transition: background 0.3s ease;
+  color: white;
+  letter-spacing: 0.05em;
+}
+
+.task-actions .edit-btn {
+  background: #bdbb1a;
+}
+
+.task-actions .edit-btn:hover {
+  background: #a39908;
+}
+
+.task-actions .delete-btn {
+  background: #db2d32;
+}
+
+.task-actions .delete-btn:hover {
+  background: #a31e22;
+}
+
+.task-actions .done-btn {
+  background: #39be77;
+}
+
+.task-actions .done-btn:hover {
+  background: #2d9a54;
+}
+
+/* Section Today & day-selector */
+.day-filter-container {
+  text-align: center;
+  user-select: none;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  position: relative;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.day-filter-container .collapse-arrow-small {
+  font-size: 1rem;
+  margin-left: 0.2rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.day-list {
+  margin-top: 0.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.day-list button {
+  border: none;
+  background: #5c9eff;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.3s ease;
+}
+
+.day-list button.active {
+  background: #3270ff;
+}
+
+.day-list button:hover {
+  background: #3270ff;
+}
+
+/* Footer arrow collapse untuk tasks */
+.collapse-circle {
+  margin: 0 auto;
+  background: #647383aa;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-circle:hover {
+  background: #445a74;
+  transition: background 0.2s ease;
+}
