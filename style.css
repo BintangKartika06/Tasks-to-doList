@@ -8,7 +8,7 @@ body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
 
-  /* Background slider color wave using multiple linear gradients */
+  
   background: linear-gradient(270deg, #89f7fe, #66a6ff);
   background-size: 400% 400%;
   animation: colorWaveSlider 20s ease infinite;
@@ -23,7 +23,7 @@ body {
   padding: 2rem 1rem;
 }
 
-/* Multiple layers for wave effect */
+
 body::before {
   content: "";
   position: fixed;
