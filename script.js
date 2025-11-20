@@ -1,5 +1,4 @@
-// Data tugas di localStorage dengan struktur:
-// {id, name, date: 'YYYY-MM-DD', completed: bool}
+
 
 const STORAGE_KEY = 'todoList_data';
 
@@ -12,7 +11,7 @@ let currentPage = 'home'; // home, daftar, tasks
 let tasks = [];
 let selectedDay = null; // filter hari di Home page
 
-// Hari & bulan dalam Bahasa Indonesia untuk format tanggal
+
 const hariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 const bulanIndo = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
