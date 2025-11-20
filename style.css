@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -6,11 +6,13 @@
 
 body {
   margin: 0;
-  font-family: 'Fira Code', monospace;
-  /* Background animasi color wave */
-  background: linear-gradient(270deg, #a1c4fd, #c2e9fb, #e3eeca, #d3f9d7, #a1c4fd);
-  background-size: 1000% 1000%;
-  animation: bgColorWave 40s ease infinite;
+  font-family: 'Montserrat', sans-serif;
+
+  /* Background slider color wave using multiple linear gradients */
+  background: linear-gradient(270deg, #89f7fe, #66a6ff);
+  background-size: 400% 400%;
+  animation: colorWaveSlider 20s ease infinite;
+
   color: #000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -21,19 +23,36 @@ body {
   padding: 2rem 1rem;
 }
 
-/* Animasi color wave (bergerak horizontal halus) */
-@keyframes bgColorWave {
+/* Multiple layers for wave effect */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(110deg, #72fffa, #d8fdf1 70%),
+    linear-gradient(120deg, #6a11cb, #cf8ffd 50%),
+    linear-gradient(240deg, #f6d365, #fda085 70%);
+  background-size: 300% 300%;
+  animation: colorWaveSlider 5s ease infinite reverse;
+  opacity: 0.5;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+@keyframes colorWaveSlider {
   0% {
-    background-position: 0% 50%;
+    background-position: 0% 50%, 0% 50%, 0% 50%;
   }
   50% {
-    background-position: 100% 50%;
+    background-position: 100% 50%, 100% 50%, 100% 50%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 0% 50%, 0% 50%, 0% 50%;
   }
 }
 
+/* NAVIGATION */
 nav {
   margin-bottom: 2rem;
 }
@@ -81,10 +100,9 @@ main {
 h1 {
   font-weight: 700;
   font-size: 2rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
   text-align: center;
-  letter-spacing: 0.08em;
-  font-family: serif;
+  letter-spacing: 0.05em;
 }
 
 .subtitle {
@@ -93,7 +111,6 @@ h1 {
   text-align: center;
   color: #444;
   margin-bottom: 2rem;
-  font-family: 'Fira Code', monospace;
 }
 
 /* FORM TAMBAH TUGAS */
@@ -116,7 +133,7 @@ h1 {
   border-radius: 6px;
   padding: 0 1rem;
   font-size: 1rem;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .add-task-container input[type="date"] {
@@ -137,7 +154,7 @@ h1 {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.3s ease;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .add-task-container button:hover {
@@ -192,7 +209,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
 }
 
@@ -237,14 +254,14 @@ h1 {
   user-select: none;
   font-weight: 400;
   font-style: italic;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* Tombol aksi */
 .task-actions button {
   border: none;
   border-radius: 8px;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   cursor: pointer;
   margin-left: 5px;
@@ -286,7 +303,7 @@ h1 {
   font-weight: 700;
   margin-bottom: 0.8rem;
   cursor: pointer;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
   position: relative;
   width: fit-content;
   margin-left: auto;
@@ -306,7 +323,7 @@ h1 {
   display: flex;
   justify-content: center;
   gap: 0.7rem;
-  font-family: 'Fira Code', monospace;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .day-list button {
