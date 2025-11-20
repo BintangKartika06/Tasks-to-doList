@@ -7,15 +7,31 @@
 body {
   margin: 0;
   font-family: 'Fira Code', monospace;
-  background: linear-gradient(135deg, #dafaff 0%, #becdff 100%);
+  /* Background animasi color wave */
+  background: linear-gradient(270deg, #a1c4fd, #c2e9fb, #e3eeca, #d3f9d7, #a1c4fd);
+  background-size: 1000% 1000%;
+  animation: bgColorWave 40s ease infinite;
   color: #000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
+}
+
+/* Animasi color wave (bergerak horizontal halus) */
+@keyframes bgColorWave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 nav {
@@ -68,6 +84,7 @@ h1 {
   margin-bottom: 0.2rem;
   text-align: center;
   letter-spacing: 0.08em;
+  font-family: serif;
 }
 
 .subtitle {
@@ -76,6 +93,7 @@ h1 {
   text-align: center;
   color: #444;
   margin-bottom: 2rem;
+  font-family: 'Fira Code', monospace;
 }
 
 /* FORM TAMBAH TUGAS */
@@ -178,7 +196,6 @@ h1 {
   font-weight: 600;
 }
 
-/* Tugas selesai tercoret */
 .task-item.completed {
   background: #dcdcdf55;
   text-decoration: line-through;
