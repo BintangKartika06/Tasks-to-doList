@@ -363,3 +363,10 @@ h1 {
   background: #445a74;
   transition: background 0.2s ease;
 }
+
+.site-footer{
+  text-align: center;
+  font-size: 0.8rem;
+  color: #000000;
+  padding: 2rem;
+}
